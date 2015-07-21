@@ -1,0 +1,278 @@
+<dom-module id="admixture-map">
+  <style>
+    :host {
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+        @apply(--layout-relative);
+
+     }
+     .list {
+        width:200px;
+        position:absolute;
+        top:10px;
+        left:10px;
+        bottom:10px;
+     }
+
+     .search-container {
+
+     }
+     .list-container {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      bottom: 50px;
+      left: 0;
+     }
+     .count-container {
+       bottom:0px;
+       height:50px;
+       position:absolute;
+       left:0;
+       right:0;
+     }
+     .searchbox {
+       --paper-input-container-underline: {
+           display:none;
+       };
+     }
+     .search-icon {
+       height:40px;
+       margin-left:10px;
+       margin-right:10px;
+     }
+     paper-material {
+       background-color:whitesmoke;
+     }
+     #infoOverlay {
+        margin:10px auto;
+        width:400px;
+        z-index:2;
+        background-color:whitesmoke;
+     }
+     paper-icon-item {
+       --paper-item-icon-width: 75px;
+     }
+     paper-icon-item {
+       cursor:pointer;
+     }
+     paper-icon-item:hover {
+       background-color: #DCEDC8;
+     }
+     iron-list {
+       height: 100%;
+     }
+  </style>
+  <template>
+    <div class="fit">
+      <google-map latitude="39.91" map="{{map}}" id="mapelement" longitude="116.38" zoom="2" additional-map-options='{"panControl": "false","panControlOptions":{"position":"3"},"scaleControl": "true","zoomControlOptions":{"style":"2","position":"8"},"mapTypeControl": "true","mapTypeControlOptions": {"style": "4","position":"2"}}'>
+        <google-map-marker id="accessionMarker" z-index="9999" hidden$="{{!showAccessionMarker}}"></google-map-marker>
+      </google-map>
+      <google-map-markerclusterer id="markerclusterer" map="{{map}}" markers="{{markers}}" average-center="{{averageCenter}}"
+      styles="{{styles}}" on-google-map-markercluster-clustering-end="onClusteringEnd">
+        <admixture-clustericon class="cluster-icon"></admixture-clustericon>
+      </google-map-markerclusterer>
+    </div>
+    <aside class="list">
+      <paper-material elevation="1" class="search-container">
+        <div class="layout horizontal">
+          <iron-icon icon="search" class="search-icon"></iron-icon>
+          <paper-input label="Search" no-label-float class="searchbox" value="{{queryString}}"></paper-input>
+        </div>
+      </paper-material>
+      <paper-material elevation="1" class="list-container">
+        <iron-list items="[[displayMarkers]]" on-mouseover="onMouseOverList" on-mouseout="onMouseOutList" on-click="onMouseClickList">
+          <template>
+            <paper-icon-item ix="{{index}}">
+              <div item-icon>
+                <canvas-piechart data="{{item.data}}" size="50" />
+              </div>
+              <paper-item-body two-line>
+                <div>{{item.name}}</div>
+                <div secondary>{{item.accId}}</div>
+              </paper-item-body>
+            </paper-icon-item>
+          </template>
+        </iron-list>
+      </paper-material>
+      <paper-material elevation="1" class="count-container">
+        <span>#</span>
+        <span>{{_getCount(displayMarkers)}}</span>
+      </paper-material>
+    </aside>
+    <admixture-infodialog id="infoOverlay" colors="{{colors}}"  hidden$="{{!showOverlay}}" class="shadow-transition"></admixture-infodialog>
+  </template>
+  <script>
+    /* global google */
+     (function() {
+
+      var COLORS20  =  ['#1f77b4','#aec7e8','#ff7f0e','#ffbb78','#2ca02c','#98df8a','#d62728','#ff9896','#9467bd','#c5b0d5','#8c564b','#c49c94','#e377c2','#f7b6d2','#7f7f7f','#c7c7c7','#bcbd22','#dbdb8d','#17becf','#9edae5'];
+      /*var COLORS20b = ['#393b79','#5254a3','#6b6ecf','#9c9ede','#637939','#8ca252','#b5cf6b','#cedb9c','#8c6d31','#bd9e39','#e7ba52','#e7cb94','#843c39','#ad494a','#d6616b','#e7969c','#7b4173','#a55194','#ce6dbd','#de9ed6'];
+      var COLORS20c = ['#3182bd','#6baed6','#9ecae1','#c6dbef','#e6550d','#fd8d3c','#fdae6b','#fdd0a2','#31a354','#74c476','#a1d99b','#c7e9c0','#756bb1','#9e9ac8','#bcbddc','#dadaeb','#636363','#969696','#bdbdbd','#d9d9d9'];*/
+      var COLORS10  =  ['#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd','#8c564b','#e377c2','#7f7f7f','#bcbd22','#17becf'];
+
+      Polymer({
+
+        is: 'admixture-map',
+        properties: {
+          markers: {
+            type:Array,
+            value: function() {return [];}
+          },
+          map: {
+            type:Object
+          },
+          displayMarkers: {
+            type:Array,
+            value: function() {return [];}
+          },
+          averageCenter: {
+            type:Boolean,
+            value:true
+          },
+          showOverlay: {
+            type: Boolean,
+            value:false
+          },
+          showAccessionMarker: {
+            type: Boolean,
+            value: false
+          },
+          queryString: {
+            type:String,
+            value: '',
+            observer:'_filterDisplayMarkers'
+          },
+          colors: {
+            type: Array,
+            computed: '_getColors(kcount)'
+          },
+          kcount:  Number
+        },
+        listeners: {
+          'google-map-markercluster-mouseover':'onMouseOverCluster',
+          'google-map-markercluster-mouseout':'onMouseOutCluster',
+          'marker-mouseover':'onMouseOverMarker',
+          'marker-mouseout':'onMouseOutMarker',
+          'marker-click':'onClickMarker',
+          'iron-resize':'onResize'
+        },
+        infoWindow: null,
+        onMouseOverCluster: function(e) {
+          var cluster = Polymer.dom(e).localTarget;
+          this.displayMarkers = this._getMarkersFromCluster(cluster);
+          this._showOverlay(cluster.clusterSubIcon.data,'Cluster of ' + cluster.markers.length+' accessions');
+        },
+        onMouseOutCluster: function() {
+          this._hideOverlay();
+          this.displayMarkers = this._getVisibleMarkers();
+        },
+        onMouseOverMarker: function(e) {
+          this._showOverlay(e.detail.data,'Name: ' + e.detail.name +' ('+e.detail.accId+')');
+        },
+        onMouseOutMarker: function() {
+          this._hideOverlay();
+        },
+        _hideOverlay: function() {
+          this.toggleClass('shadow-elevation-16dp',false,this.$.infoOverlay);
+          this.showOverlay = false;
+        },
+        _showOverlay: function(data, text) {
+          this.showOverlay = true;
+          this.$.infoOverlay.text = text;
+          this.$.infoOverlay.data = data;
+          this.toggleClass('shadow-elevation-16dp',true,this.$.infoOverlay);
+        },
+        _getColors: function(kcount) {
+            if (kcount <= 10) {
+              return COLORS10;
+            }
+            return COLORS20;
+        },
+        _getMarkersFromCluster: function(cluster)  {
+          return cluster.markers;
+        },
+        _getVisibleMarkers : function() {
+          var visibleMarkers = [];
+          for (var i = 0;i<this.$.markerclusterer.clusters.length;i++) {
+            var cluster = this.$.markerclusterer.clusters[i];
+            visibleMarkers = visibleMarkers.concat(cluster.markers);
+          }
+          return visibleMarkers;
+        },
+        onClusteringEnd:  function() {
+          this.displayMarkers = this._getVisibleMarkers();
+        },
+        onMouseOverList : function(e) {
+          if (e.target !== e.currentTarget) {
+            var ix = this._getListItemIxFromEvent(e.target);
+            if (ix !== null) {
+              var marker = this.displayMarkers[ix];
+              this.$.accessionMarker.latitude = marker.position.lat();
+              this.$.accessionMarker.longitude = marker.position.lng();
+              this.showAccessionMarker = true;
+            }
+          }
+        },
+        onMouseClickList: function(e) {
+           if (e.target !== e.currentTarget) {
+            var ix = this._getListItemIxFromEvent(e.target);
+            if (ix !== null) {
+              var marker = this.displayMarkers[ix];
+              var position = marker.position;
+              this.map.setCenter(position);
+              this.map.setZoom(8);
+            }
+          }
+        },
+        onClickMarker: function(e) {
+          if (!this.infoWindow) {
+            this.infoWindow = new google.maps.InfoWindow();
+          }
+          var marker = e.target;
+          var popup = document.createElement('admixture-infodialog');
+          popup.colors = this.colors;
+          popup.text = 'Name: ' + marker.name +' ('+marker.accId+')';
+          popup.data = marker.data;
+          this.infoWindow.setContent(popup);
+          this.infoWindow.setPosition(marker.position);
+          this.infoWindow.open(this.map);
+        },
+        onMouseOutList: function() {
+          this.showAccessionMarker =false;
+        },
+        _getCount: function(displayMarkers) {
+          return displayMarkers.length;
+        },
+        _getListItemIxFromEvent: function(ele) {
+          if (ele.tagName === 'PAPER-ICON-ITEM') {
+             return ele.ix;
+          }
+          do {
+            ele = ele.parentElemen;
+            if (ele.tagName === 'PAPER-ICON-ITEM') {
+              return ele.ix;
+            }
+          } while (ele);
+          return null;
+        },
+
+        _filterDisplayMarkers: function(newValue,oldValue) {
+           var markers = this.displayMarkers;
+           if (newValue === '' || newValue.length < oldValue.length || !isNaN(newValue)) {
+             markers = this._getVisibleMarkers();
+           }
+           var foundMarkers = [];
+           for (var i=0;i<markers.length;i++) {
+              var marker = markers[i];
+              if (marker.name.indexOf(newValue) > -1 || marker.accId === newValue) {
+                foundMarkers.push(marker);
+              }
+            }
+           this.displayMarkers = foundMarkers;
+        }
+
+      });
+    })();
+  </script>
+</dom-module>
