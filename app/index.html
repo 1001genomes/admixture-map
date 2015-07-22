@@ -46,10 +46,9 @@ part of the polymer project is also subject to an additional IP rights grant fou
     <span id="browser-sync-binding"></span>
     <template is="dom-bind" id="app">
       <paper-dialog id="infoDialog" modal>
-        <h2>1001 Admixture Map</h2>
+        <h2>What is this about?</h2>
         <div>
-           <p>This is the admixture map.</p>
-           <p>You can easily choose</p>
+           <marked-element markdown="{{aboutContent}}"></marked-element>
         </div>
         <div class="buttons">
           <paper-button dialog-dismiss>Close</paper-button>
@@ -76,7 +75,8 @@ part of the polymer project is also subject to an additional IP rights grant fou
         <div class="fit layout vertical">
           <iron-ajax id="datasourceMeta" handleAs="json" on-response="handleFusionMetaResponse"></iron-ajax>
           <iron-ajax id="datasource" url="https://www.googleapis.com/fusiontables/v1/query" params="{{fusionParams}}"
-          handleAs="json" on-response="handleFusionResponse"></iron-ajax>
+          handle-as="json" on-response="handleFusionResponse"></iron-ajax>
+          <iron-ajax id="aboutsource" auto="true" url="https://api.github.com/repos/Gregor-Mendel-Institute/1001-admixture-map/readme" headers='{"Accept":"application/vnd.github.v3.raw"}' handle-as="text" last-response="{{aboutContent}}"></iron-ajax>
           <iron-collapse id="settingsMenu">
             <div class="settings-container">
               <div>
