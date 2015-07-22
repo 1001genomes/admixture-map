@@ -152,6 +152,7 @@
         listeners: {
           'google-map-markercluster-mouseover':'onMouseOverCluster',
           'google-map-markercluster-mouseout':'onMouseOutCluster',
+          'google-map-markercluster-click': 'onClickCluster',
           'marker-mouseover':'onMouseOverMarker',
           'marker-mouseout':'onMouseOutMarker',
           'marker-click':'onClickMarker',
@@ -168,7 +169,7 @@
           this.displayMarkers = this._getVisibleMarkers();
         },
         onMouseOverMarker: function(e) {
-          this._showOverlay(e.detail.data,'Name: ' + e.detail.name +' ('+e.detail.accId+')');
+          this._showOverlay(e.detail.data,this._getTitleFromMarker(e.detail));
         },
         onMouseOutMarker: function() {
           this._hideOverlay();
@@ -203,6 +204,9 @@
         onClusteringEnd:  function() {
           this.displayMarkers = this._getVisibleMarkers();
         },
+        onClickCluster: function() {
+          this._hideOverlay();
+        },
         onMouseOverList : function(e) {
           e.stopPropagation();
           if (e.target !== e.currentTarget) {
@@ -212,6 +216,7 @@
               this.$.accessionMarker.latitude = marker.position.lat();
               this.$.accessionMarker.longitude = marker.position.lng();
               this.showAccessionMarker = true;
+              this._showOverlay(marker.data,this._getTitleFromMarker(marker));
             }
           }
         },
@@ -223,6 +228,7 @@
               var position = marker.position;
               this.map.setCenter(position);
               this.map.setZoom(8);
+              this._hideOverlay();
             }
           }
         },
@@ -242,6 +248,7 @@
         onMouseOutList: function(e) {
           e.stopPropagation();
           this.showAccessionMarker =false;
+          this._hideOverlay();
         },
         _getCount: function(displayMarkers) {
           return displayMarkers.length;
@@ -254,6 +261,10 @@
             ele = ele.parentElement;
           } while (ele);
           return null;
+        },
+
+        _getTitleFromMarker: function(marker) {
+          return 'Name: ' + marker.name +' ('+marker.accId+')';
         },
 
         _filterDisplayMarkers: function(newValue,oldValue) {
