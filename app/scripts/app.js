@@ -66,7 +66,7 @@
     chrs = d3.set(chrs).values();
     this.ks = Ks;
     this.chrs = chrs;
-    this.K = this.K || 8;
+    this.K = this.K || 9;
     this.chr = this.chrs[0];
     this.fetchData();
   };
