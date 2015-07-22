@@ -81,7 +81,7 @@
         </div>
       </paper-material>
       <paper-material elevation="1" class="list-container">
-        <iron-list items="[[displayMarkers]]" on-mouseover="onMouseOverList" on-mouseout="onMouseOutList" on-click="onMouseClickList">
+        <iron-list items="[[displayMarkers]]" id="list" on-mouseover="onMouseOverList" on-mouseout="onMouseOutList" on-click="onMouseClickList">
           <template>
             <paper-icon-item ix="{{index}}">
               <div item-icon>
@@ -204,6 +204,7 @@
           this.displayMarkers = this._getVisibleMarkers();
         },
         onMouseOverList : function(e) {
+          e.stopPropagation();
           if (e.target !== e.currentTarget) {
             var ix = this._getListItemIxFromEvent(e.target);
             if (ix !== null) {
@@ -238,21 +239,19 @@
           this.infoWindow.setPosition(marker.position);
           this.infoWindow.open(this.map);
         },
-        onMouseOutList: function() {
+        onMouseOutList: function(e) {
+          e.stopPropagation();
           this.showAccessionMarker =false;
         },
         _getCount: function(displayMarkers) {
           return displayMarkers.length;
         },
         _getListItemIxFromEvent: function(ele) {
-          if (ele.tagName === 'PAPER-ICON-ITEM') {
-             return ele.ix;
-          }
           do {
-            ele = ele.parentElemen;
             if (ele.tagName === 'PAPER-ICON-ITEM') {
               return ele.ix;
             }
+            ele = ele.parentElement;
           } while (ele);
           return null;
         },
