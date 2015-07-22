@@ -40,20 +40,29 @@ part of the polymer project is also subject to an additional IP rights grant fou
     <link rel="import" href="elements/elements.html">
     <!-- endreplace-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-26150757-4', 'auto');
+        ga('send', 'pageview');
+    </script>
   </head>
 
-  <body unresolved class="fullbleed layout vertical">
+  <body unresolved class="fullbleed">
     <span id="browser-sync-binding"></span>
     <template is="dom-bind" id="app">
-      <paper-dialog id="infoDialog" modal>
-        <h2>What is this about?</h2>
-        <div>
-           <marked-element markdown="{{aboutContent}}"></marked-element>
-        </div>
-        <div class="buttons">
-          <paper-button dialog-dismiss>Close</paper-button>
-        </div>
-      </paper-dialog>
+     <paper-dialog id="infoDialog" modal>
+          <h2>What is this about?</h2>
+          <paper-dialog-scrollable>
+            <marked-element markdown="{{aboutContent}}"></marked-element>
+          </paper-dialog-scrollable>
+          <div class="buttons">
+            <paper-button dialog-dismiss>Close</paper-button>
+          </div>
+        </paper-dialog>
       <paper-header-panel main mode="seamed">
         <!-- Main Toolbar -->
         <paper-toolbar id="mainToolbar">
@@ -76,7 +85,7 @@ part of the polymer project is also subject to an additional IP rights grant fou
           <iron-ajax id="datasourceMeta" handleAs="json" on-response="handleFusionMetaResponse"></iron-ajax>
           <iron-ajax id="datasource" url="https://www.googleapis.com/fusiontables/v1/query" params="{{fusionParams}}"
           handle-as="json" on-response="handleFusionResponse"></iron-ajax>
-          <iron-ajax id="aboutsource" auto="true" url="https://api.github.com/repos/Gregor-Mendel-Institute/1001-admixture-map/readme" headers='{"Accept":"application/vnd.github.v3.raw"}' handle-as="text" last-response="{{aboutContent}}"></iron-ajax>
+          <iron-ajax id="aboutsource" auto="true"  url="https://api.github.com/repos/Gregor-Mendel-Institute/1001-admixture-map/readme" headers='{"Accept":"application/vnd.github.v3.raw"}' handle-as="text" last-response="{{aboutContent}}"></iron-ajax>
           <iron-collapse id="settingsMenu">
             <div class="settings-container">
               <div>
@@ -116,7 +125,6 @@ part of the polymer project is also subject to an additional IP rights grant fou
             </neon-animatable>--></neon-animated-pages>
         </div>
       </paper-header-panel>
-      </paper-drawer-panel>
       <paper-toast id="caching-complete" duration="6000" text="Caching complete! This app will work offline."></paper-toast>
       <!--<platinum-sw-register auto-register clients-claim skip-waiting on-service-worker-installed="displayInstalledToast">
       <platinum-sw-cache default-cache-strategy="networkFirst"
