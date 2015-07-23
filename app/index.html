@@ -106,6 +106,9 @@ part of the polymer project is also subject to an additional IP rights grant fou
               </div>
             </div>
           </iron-collapse>
+          <div class="spinner-container">
+            <paper-spinner alt="Loading data" active$="{{showSpinner}}"></paper-spinner>
+          </div>
           <!-- Main Content -->
           <neon-animated-pages id="pages" class="flex layout vertical" attr-for-selected="data-route" selected="{{route}}" entry-animation="slide-from-right-animation"
           exit-animation="slide-left-animation">

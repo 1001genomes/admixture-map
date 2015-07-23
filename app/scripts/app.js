@@ -4,6 +4,7 @@
   'use strict';
 
   var app = document.querySelector('#app');
+  app.showSpinner = true;
 
   app.apiKey = 'AIzaSyB1GbyVSIOK12RJbFMkaIJjwhVNG-b8fjc';
   app.dataSources = [{value:'11w8bumbRj9R-lmdPa4tBCrf_7VDloDTG5jJTPg-w',name:'admixture FG3 1153',description:'1001 genomes: admixiture full genome version 3, 1153 accessions'},
@@ -48,6 +49,7 @@
       marker.name = name;
       markers.push(marker);
     }
+    this.showSpinner = false;
     this.markers = markers;
   };
   app.handleFusionMetaResponse = function (event) {
@@ -76,6 +78,7 @@
     this.$.datasourceMeta.generateRequest();
   };
   app.fetchData = function () {
+    this.showSpinner = true;
     var query = 'SELECT ecotypeid,name,longitude,latitude,' + this._getColumnFromSettings().join(',') + ' FROM ' + this.dataSources[0].value;
     this.fusionQuery = query;
     this.fusionParams = { sql: query, key: this.apiKey };
