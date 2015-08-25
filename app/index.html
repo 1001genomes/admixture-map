@@ -70,8 +70,11 @@ part of the polymer project is also subject to an additional IP rights grant fou
           <span class="flex paper-font-headline" style="text-align:center;color:#fff">1001 Admixture Map</span>
           <!-- Toolbar icons -->
           <paper-tabs selected="{{route}}" attr-for-selected="data-route">
+            <paper-tab link data-route="cluster">
+                <a href="./" class="horizontal center-center layout links"><iron-icon icon="editor:insert-chart"></iron-icon><span>Cluster</span></a>
+            </paper-tab>
             <paper-tab link data-route="map">
-              <a href="/" class="horizontal center-center layout links">Map</a>
+              <a href="./map" class="horizontal center-center layout links"><iron-icon icon="maps:map"></iron-icon><span>Map</span></a>
             </paper-tab>
             <!--<paper-tab link data-route="list">
                 <a  href="/list" class="horizontal center-center layout links">List</a>
@@ -112,9 +115,13 @@ part of the polymer project is also subject to an additional IP rights grant fou
           <!-- Main Content -->
           <neon-animated-pages id="pages" class="flex layout vertical" attr-for-selected="data-route" selected="{{route}}" entry-animation="slide-from-right-animation"
           exit-animation="slide-left-animation">
-            <neon-animatable data-route="map" class="layout vertical flex">
+            <resizeable-page data-route="cluster" class="layout vertical flex">
               <admixture-map on-google-map-ready="googleMapLoaded" kcount="{{K}}" markers="{{markers}}"></admixture-map>
-            </neon-animatable>
+            </resizeable-page>
+            <resizeable-page data-route="map" class="layout vertical flex">
+                <google-map latitude="39.91" id="mapelement" longitude="116.38" zoom="2" additional-map-options='{"panControl": "false","panControlOptions":{"position":"3"},"scaleControl": "true","zoomControlOptions":{"style":"2","position":"8"},"mapTypeControl": "true","mapTypeControlOptions{"style": "4","position":"2"}}'>
+              </google-map>
+            </resizeable-page>
             <!--<neon-animatable data-route="list" class="layout vertical flex">
               <span>LIST</span>
             </neon-animatable>-->

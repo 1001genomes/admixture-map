@@ -15,16 +15,22 @@
     document.querySelector('#caching-complete').show();
   };
 
+
+
   // Listen for template bound event to know when bindings
   // have resolved and content has been stamped to the page
   app.addEventListener('dom-change', function () {
-
+    app.$.mapelement.addEventListener('google-map-ready', function() {
+          app.initFusionLayer();
+      });
   });
 
   // See https://github.com/Polymer/polymer/issues/1381
   window.addEventListener('WebComponentsReady', function () {
-    // imports are loaded and elements have been registered
+
   });
+
+
 
 
   app.handleFusionResponse = function (event) {
@@ -94,6 +100,27 @@
   };
   app.googleMapLoaded = function() {
     this.initControls();
+  };
+  app.initFusionLayer = function() {
+    var layer = new google.maps.FusionTablesLayer({
+      query: {
+          select: '\'latitude\'',
+          from: app.dataSources[0].value,
+        }
+      });
+    layer.setMap(app.$.mapelement.map);
+    google.maps.event.addListener(layer, 'click', function(e) {
+      // Change the content of the InfoWindow
+      e.infoWindowHtml = app._getInfoWIndowContent(e.row);
+    });
+  };
+
+  app._getInfoWIndowContent = function(row) {
+    return '<b>id:</b> '+row.ecotypeid.value + '<br>' +
+           '<b>name:</b> '+row.name.value + '<br>' +
+           '<b>country:</b> '+row.country.value + '<br>' +
+           '<b>sitename:</b> '+row.sitename.value + '<br>'
+            ;
   };
 
   app._getColumnFromSettings = function() {
