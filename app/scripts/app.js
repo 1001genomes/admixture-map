@@ -12,7 +12,10 @@
                               {value:'19f1j8Gn-9zWP0q57H-uZhay10BEUQMejetutqDEG',name:'admixture all indiviudals',description:'1001 genomes: admixture; 1211 accessions; ld pruning to r^2 = 0.3'}];
 
   app.displayInstalledToast = function () {
-    document.querySelector('#caching-complete').show();
+    // Check to make sure caching is actually enabled—it won't be in the dev environment.
+    if (!document.querySelector('platinum-sw-cache').disabled) {
+      document.querySelector('#caching-complete').show();
+    }
   };
 
 

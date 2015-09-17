@@ -66,7 +66,7 @@
   <template>
     <div class="fit">
       <google-map latitude="39.91" map="{{map}}" id="mapelement" longitude="116.38" zoom="2" additional-map-options='{"panControl": "false","panControlOptions":{"position":"3"},"scaleControl": "true","zoomControlOptions":{"style":"2","position":"8"},"mapTypeControl": "true","mapTypeControlOptions": {"style": "4","position":"2"}}'>
-        <google-map-marker id="accessionMarker" z-index="9999" hidden$="{{!showAccessionMarker}}"></google-map-marker>
+        <google-map-marker id="accessionMarker" z-index="9999" latitude="0" longitude="0" hidden$="{{!showAccessionMarker}}"></google-map-marker>
       </google-map>
       <google-map-markerclusterer id="markerclusterer" map="{{map}}" markers="{{markers}}" average-center="{{averageCenter}}"
       styles="{{styles}}" on-google-map-markercluster-clustering-end="onClusteringEnd">
