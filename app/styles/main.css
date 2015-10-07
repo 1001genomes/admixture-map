@@ -13,6 +13,16 @@ body {
   color: #333;
 }
 
+google-map-markercluster {
+    -webkit-user-select: none; /* Chrome/Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+ */
+
+    /* Not implemented yet */
+    -o-user-select: none;
+    user-select: none;
+}
+
 .links {
   color:white;
   margin:0 12px;
