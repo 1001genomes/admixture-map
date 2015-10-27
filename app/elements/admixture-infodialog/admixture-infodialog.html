@@ -13,7 +13,7 @@
       }
     </style>
     <google-chart type='pie' options="{{_getOptions(colors,text)}}"
-      data="{{_getData(data)}}"
+      data="{{_getData(data,slicenames)}}"
       id="chart">
     </google-chart>
   </template>
@@ -35,6 +35,10 @@
       colors: {
         type: Array,
         value: function() { return [];}
+      },
+      slicenames: {
+        type: Array,
+        value: function() {return  [];}
       }
     },
     _getOptions : function(colors,text) {
@@ -48,10 +52,14 @@
         }
         return options;
     },
-    _getData: function(data) {
+    _getData: function(data,slicenames) {
         var Kvalues = [['K','%']];
         for (var i = 0; i < data.length; i++) {
-            Kvalues.push(['K'+i,data[i]]);
+          var sliceName = 'K'+i;
+          if (slicenames.length >= i) {
+            sliceName = slicenames[i];
+          }
+          Kvalues.push([sliceName,data[i]]);
         }
         return Kvalues;
     },

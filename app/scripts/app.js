@@ -11,6 +11,8 @@
 {value:'1LElwc9J3jDq_BfzxU9JzFYMb0HgKIsHkqlo-R3GR',name:'admixture identical individuals imputed',description:'1001genomes: admixture; 1146 accessions; identicals removed and imputed; no singletons; ld pruning to r^2 = 0.1'},
                               {value:'19f1j8Gn-9zWP0q57H-uZhay10BEUQMejetutqDEG',name:'admixture all indiviudals',description:'1001 genomes: admixture; 1211 accessions; ld pruning to r^2 = 0.3'}];
 
+  app.clusterNames = ['Western Europe','Relicts','Germany','Northern Sweden','Iberian Peninsula','Central Asia','Southern Sweden','Italy, Balkans, Caucasus','Central Europe'];
+
   app.displayInstalledToast = function () {
     // Check to make sure caching is actually enabled—it won't be in the dev environment.
     if (!document.querySelector('platinum-sw-cache').disabled) {

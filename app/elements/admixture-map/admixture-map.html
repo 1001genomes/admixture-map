@@ -100,7 +100,7 @@
         <span>{{_getCount(displayMarkers)}}</span>
       </paper-material>
     </aside>
-    <admixture-infodialog id="infoOverlay" colors="{{colors}}"  hidden$="{{!showOverlay}}" class="shadow-transition"></admixture-infodialog>
+    <admixture-infodialog id="infoOverlay" colors="{{colors}}" slicenames="{{slicenames}}"  hidden$="{{!showOverlay}}" class="shadow-transition"></admixture-infodialog>
   </template>
   <script>
     /* global google */
@@ -147,6 +147,10 @@
             type: Array,
             computed: '_getColors(kcount)'
           },
+          slicenames: {
+            type:Array,
+            computed: '_getSliceNames(kcount)'
+          },
           kcount:  Number
         },
         listeners: {
@@ -188,6 +192,12 @@
               return COLORS10;
             }
             return COLORS20;
+        },
+        _getSliceNames: function(kcount) {
+          if (kcount === 9) {
+            return  ['Western Europe','Relicts','Germany','Northern Sweden','Iberian Peninsula','Central Asia','Southern Sweden','Italy, Balkans, Caucasus','Central Europe'];
+          }
+          return [];
         },
         _getMarkersFromCluster: function(cluster)  {
           return cluster.markers;
@@ -240,6 +250,7 @@
           popup.colors = this.colors;
           popup.text = 'Name: ' + marker.name +' ('+marker.accId+')';
           popup.data = marker.data;
+          popup.slicenames = this.slicenames;
           this.infoWindow.setContent(popup);
           this.infoWindow.setPosition(marker.position);
           this.infoWindow.open(this.map);
