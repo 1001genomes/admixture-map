@@ -1,85 +1,71 @@
+<link rel="import" href="../../styles/shared-styles.html">
 <dom-module id="admixture-map">
-  <style>
-    :host {
-        @apply(--layout-vertical);
-        @apply(--layout-flex);
-        @apply(--layout-relative);
-
-     }
-     .list {
-        width:200px;
-        position:absolute;
-        top:10px;
-        left:10px;
-        bottom:10px;
-     }
-
-     .search-container {
-
-     }
-     .list-container {
-      position: absolute;
-      top: 50px;
-      right: 0;
-      bottom: 50px;
-      left: 0;
-     }
-     .count-container {
-       bottom:0px;
-       height:50px;
-       position:absolute;
-       left:0;
-       right:0;
-     }
-     .searchbox {
-       --paper-input-container-underline: {
-           display:none;
-       };
-     }
-     .search-icon {
-       height:40px;
-       margin-left:10px;
-       margin-right:10px;
-     }
-     paper-material {
-       background-color:whitesmoke;
-     }
-     #infoOverlay {
-        margin:10px auto;
-        width:400px;
-        z-index:2;
-        background-color:whitesmoke;
-     }
-     paper-icon-item {
-       --paper-item-icon-width: 75px;
-     }
-     paper-icon-item {
-       cursor:pointer;
-     }
-     paper-icon-item:hover {
-       background-color: #DCEDC8;
-     }
-     iron-list {
-       height: 100%;
-     }
-     .legend {
-        position:absolute;
-        top:10px;
-        right:10px;
-        height:50px;
-     }
-
-     .legend li {
-       list-style:none;
-     }
-     .legend ul {
-        padding:0;
-     }
-     .legend-container {
-        padding:10px;
-     }
-  </style>
   <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+          @apply(--layout-vertical);
+          @apply(--layout-flex);
+          @apply(--layout-relative);
+
+        }
+        .list {
+          width:200px;
+          position:absolute;
+          top:10px;
+          left:10px;
+          bottom:10px;
+        }
+
+        .search-container {
+
+        }
+        .list-container {
+        position: absolute;
+        top: 50px;
+        right: 0;
+        bottom: 50px;
+        left: 0;
+        }
+        .count-container {
+          bottom:0px;
+          height:50px;
+          position:absolute;
+          left:0;
+          right:0;
+        }
+        .searchbox {
+          --paper-input-container-underline: {
+              display:none;
+          };
+        }
+        .search-icon {
+          height:40px;
+          margin-left:10px;
+          margin-right:10px;
+        }
+        paper-material {
+          background-color:whitesmoke;
+        }
+        #infoOverlay {
+          margin:10px auto;
+          width:400px;
+          z-index:2;
+          background-color:whitesmoke;
+        }
+        paper-icon-item {
+          --paper-item-icon-width: 75px;
+        }
+        paper-icon-item {
+          cursor:pointer;
+        }
+        paper-icon-item:hover {
+          background-color: #DCEDC8;
+        }
+        iron-list {
+          height: 100%;
+        }
+    </style>
     <div class="fit">
       <google-map latitude="39.91" map="{{map}}" id="mapelement" longitude="116.38" zoom="2" additional-map-options='{"panControl": "false","panControlOptions":{"position":"3"},"scaleControl": "true","zoomControlOptions":{"style":"2","position":"8"},"mapTypeControl": "true","mapTypeControlOptions": {"style": "4","position":"2"}}'>
         <google-map-marker id="accessionMarker" z-index="9999" latitude="0" longitude="0" hidden$="{{!showAccessionMarker}}"></google-map-marker>
@@ -124,13 +110,13 @@
              <template is="dom-repeat" items="{{_getSliceColorPairs(colors,slicenames)}}">
                <li>
                  <svg xmlns="http://www.w3.org/2000/svg" height="10px" width="10px">
-                    <circle cx="5" cy="5" r="5" fill$="{{item.color}}" />
+                    <circle cx="5" cy="5" r="5" stroke="black" fill$="{{item.color}}" />
                 </svg>
                  <span style="margin-left:10px">{{item.label}}</span>
                </li>
               </template>
           </ul>
-          <p hidden$="{{_showLegendNote(slicenames)}}"" style="font-size:12px">* named post-hoc according to geography</p>
+          <p hidden$="{{_showLegendNote(slicenames)}}" style="font-size:12px">* named post-hoc according to geography</p>
         </div>
       </paper-material>
     </aside>
