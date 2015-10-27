@@ -119,7 +119,7 @@
     <aside class="legend">
        <paper-material elevation="1" class="legend-container">
         <div class="layout vertical">
-           <h4 style="margin-bottom:0">Clusters</h4>
+           <h4 style="margin-bottom:0">Clusters<span hidden$="{{_showLegendNote(slicenames)}}">*</span></h4>
            <ul>
              <template is="dom-repeat" items="{{_getSliceColorPairs(colors,slicenames)}}">
                <li>
@@ -130,6 +130,7 @@
                </li>
               </template>
           </ul>
+          <p hidden$="{{_showLegendNote(slicenames)}}"" style="font-size:12px">* named post-hoc according to geography</p>
         </div>
       </paper-material>
     </aside>
@@ -231,9 +232,12 @@
         },
         _getSliceNames: function(kcount) {
           if (kcount === 9) {
-            return  ['Western Europe','Relicts','Germany','Northern Sweden','Iberian Peninsula','Central Asia','Southern Sweden','Italy, Balkans, Caucasus','Central Europe'];
+            return  ['Western Europe','Relict','Germany','Northern Sweden','Iberian Peninsula','Central Asia','Southern Sweden','Italy, Balkans, Caucasus','Central Europe'];
           }
           return [];
+        },
+        _showLegendNote: function(slicenames) {
+          return slicenames.length === 0;
         },
         _getSliceColorPairs: function(colors,slicenames) {
           var pairs = [];
