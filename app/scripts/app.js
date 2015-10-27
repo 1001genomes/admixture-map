@@ -28,6 +28,17 @@
     app.$.mapelement.addEventListener('google-map-ready', function() {
           app.initFusionLayer();
       });
+      app.populations = [
+        {label:'Western Europe (117)',color:'#5781fc'},
+        {label:'Relict (25)',color:'#00e03d'},
+        {label:'Germany (171)',color:'#55d8d8'},
+        {label:'North Sweden (64)',color:'#ff9d00'},
+        {label:'Iberian Peninsula (110)',color:'#e04d9d'},
+        {label:'Central Asia (79)',color:'#7d55fc'},
+        {label:'South Sweden (156)',color:'#fc6355'},
+        {label:'Italy-Balkan-Caucasus (92)',color:'white'},
+        {label:'Central Europe (184)',color:'#fbf358'}
+       ];
   });
 
   // See https://github.com/Polymer/polymer/issues/1381
@@ -110,7 +121,11 @@
     var layer = new google.maps.FusionTablesLayer({
       query: {
           select: '\'latitude\'',
-          from: app.dataSources[0].value,
+          from: '1DwOTrkELNx7DvrrmqGp4V5FDVR0cZUnlGNmZQ-J_',
+        },
+        options: {
+          styleId: 2,
+          templateId: 2
         }
       });
     layer.setMap(app.$.mapelement.map);
@@ -124,7 +139,8 @@
     return '<b>id:</b> '+row.ecotypeid.value + '<br>' +
            '<b>name:</b> '+row.name.value + '<br>' +
            '<b>country:</b> '+row.country.value + '<br>' +
-           '<b>sitename:</b> '+row.sitename.value + '<br>'
+           '<b>sitename:</b> '+row.sitename.value + '<br>' +
+           '<b>population:</b> ' + row.population.value +'<br>'
             ;
   };
 

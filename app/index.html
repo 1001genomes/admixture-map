@@ -74,7 +74,7 @@
                 <a href="./" class="horizontal center-center layout links"><iron-icon icon="editor:insert-chart"></iron-icon><span>Cluster</span></a>
             </paper-tab>
             <paper-tab link data-route="map">
-              <a href="./map" class="horizontal center-center layout links"><iron-icon icon="maps:map"></iron-icon><span>Map</span></a>
+              <a href="./map" class="horizontal center-center layout links"><iron-icon icon="maps:map"></iron-icon><span>Populations</span></a>
             </paper-tab>
             <!--<paper-tab link data-route="list">
                 <a  href="/list" class="horizontal center-center layout links">List</a>
@@ -116,23 +116,35 @@
           <neon-animated-pages id="pages" class="flex layout vertical" attr-for-selected="data-route" selected="{{route}}" entry-animation="slide-from-right-animation"
           exit-animation="slide-left-animation">
             <resizeable-page data-route="cluster" class="layout vertical flex">
-              <admixture-map on-google-map-ready="googleMapLoaded" kcount="{{K}}" markers="{{markers}}"></admixture-map>
+              <admixture-map on-google-map-ready="googleMapLoaded" kcount="{{K}}" markers="{{markers}}" populations="{{populations}}"></admixture-map>
             </resizeable-page>
             <resizeable-page data-route="map" class="layout vertical flex">
                 <google-map latitude="39.91" id="mapelement" longitude="116.38" zoom="2" additional-map-options='{"panControl": "false","panControlOptions":{"position":"3"},"scaleControl": "true","zoomControlOptions":{"style":"2","position":"8"},"mapTypeControl": "true","mapTypeControlOptions{"style": "4","position":"2"}}'>
               </google-map>
+              <aside class="legend">
+                <paper-material elevation="1" class="legend-container">
+                  <div class="layout vertical">
+                    <h4 style="margin-bottom:0">Populations*</h4>
+                    <ul>
+                      <template is="dom-repeat" items="{{populations}}">
+                        <li>
+                          <svg xmlns="http://www.w3.org/2000/svg" height="10px" width="10px">
+                              <circle cx="5" cy="5" r="5" stroke="black" fill$="{{item.color}}" />
+                          </svg>
+                          <span style="margin-left:10px">{{item.label}}</span>
+                        </li>
+                       </template>
+                       <li>
+                        <iron-icon class="admixed_icon" icon="notification:do-not-disturb"></iron-icon>
+                        <span style="margin-left:8px">Admixed</span>
+                       </li>
+                    </ul>
+                    <p style="font-size:12px">* see info for population assignment</p>
+                  </div>
+                </paper-material>
+              </aside>
             </resizeable-page>
-            <!--<neon-animatable data-route="list" class="layout vertical flex">
-              <span>LIST</span>
-            </neon-animatable>-->
-            <!--<neon-animatable data-route="about" class="layout vertical flex">
-              <div class="about-content">
-                  <paper-material elevation="1">
-                     <h1>1001 Admixture Map</h1>
-                     <p>ASDASDASD</p>
-                  </paper-material>
-              </div>
-            </neon-animatable>--></neon-animated-pages>
+           </neon-animated-pages>
         </div>
       </paper-header-panel>
     <!-- Uncomment next block to enable Service Worker support (1/2) -->
