@@ -62,6 +62,22 @@
      iron-list {
        height: 100%;
      }
+     .legend {
+        position:absolute;
+        top:10px;
+        right:10px;
+        height:50px;
+     }
+
+     .legend li {
+       list-style:none;
+     }
+     .legend ul {
+        padding:0;
+     }
+     .legend-container {
+        padding:10px;
+     }
   </style>
   <template>
     <div class="fit">
@@ -98,6 +114,23 @@
       <paper-material elevation="1" class="count-container">
         <span>#</span>
         <span>{{_getCount(displayMarkers)}}</span>
+      </paper-material>
+    </aside>
+    <aside class="legend">
+       <paper-material elevation="1" class="legend-container">
+        <div class="layout vertical">
+           <h4 style="margin-bottom:0">Clusters</h4>
+           <ul>
+             <template is="dom-repeat" items="{{_getSliceColorPairs(colors,slicenames)}}">
+               <li>
+                 <svg xmlns="http://www.w3.org/2000/svg" height="10px" width="10px">
+                    <circle cx="5" cy="5" r="5" fill$="{{item.color}}" />
+                </svg>
+                 <span style="margin-left:10px">{{item.label}}</span>
+               </li>
+              </template>
+          </ul>
+        </div>
       </paper-material>
     </aside>
     <admixture-infodialog id="infoOverlay" colors="{{colors}}" slicenames="{{slicenames}}"  hidden$="{{!showOverlay}}" class="shadow-transition"></admixture-infodialog>
@@ -193,11 +226,29 @@
             }
             return COLORS20;
         },
+        _getLabelFromIndex: function(colors,index) {
+          return this.datasource.labels[index];
+        },
         _getSliceNames: function(kcount) {
           if (kcount === 9) {
             return  ['Western Europe','Relicts','Germany','Northern Sweden','Iberian Peninsula','Central Asia','Southern Sweden','Italy, Balkans, Caucasus','Central Europe'];
           }
           return [];
+        },
+        _getSliceColorPairs: function(colors,slicenames) {
+          var pairs = [];
+          var i;
+          if (slicenames.length === 0) {
+             for (i=0;i<this.kcount;i++) {
+               pairs.push({color:colors[i],label:'K'+i});
+             }
+          }
+          else {
+             for (i=0;i<slicenames.length;i++) {
+               pairs.push({color:colors[i],label:slicenames[i]});
+             }
+          }
+          return pairs;
         },
         _getMarkersFromCluster: function(cluster)  {
           return cluster.markers;
