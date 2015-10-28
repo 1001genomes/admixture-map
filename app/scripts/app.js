@@ -28,18 +28,19 @@
     app.$.mapelement.addEventListener('google-map-ready', function() {
           app.initFusionLayer();
       });
-      app.populations = [
+  });
+
+  app.populations = [
         {label:'Western Europe (117)',color:'#5781fc'},
-        {label:'Relict (25)',color:'#00e03d'},
+        {label:'Relict (25)',color:'#00e03d',isRelic:true},
         {label:'Germany (171)',color:'#55d8d8'},
         {label:'North Sweden (64)',color:'#ff9d00'},
         {label:'Iberian Peninsula (110)',color:'#e04d9d'},
         {label:'Central Asia (79)',color:'#7d55fc'},
         {label:'South Sweden (156)',color:'#fc6355'},
-        {label:'Italy-Balkan-Caucasus (92)',color:'white'},
+        {label:'Italy, Balkans, Caucasus (92)',color:'white'},
         {label:'Central Europe (184)',color:'#fbf358'}
        ];
-  });
 
   // See https://github.com/Polymer/polymer/issues/1381
   window.addEventListener('WebComponentsReady', function () {
@@ -65,7 +66,12 @@
         Kvalues.push(row[(j + 4)] * 100);
       }
       var marker = document.createElement('admixture-marker');
+      var customColors = null;
+      if (this.K === 9)  {
+        customColors = this.populations.map(function(item) { return item.color;});
+      }
       marker.position = coordinate;
+      marker.colors = customColors;
       marker.data = Kvalues;
       marker.accId = accId;
       marker.name = name;
@@ -159,5 +165,14 @@
   };
   app._hideChrSetting = function(chrs) {
     return chrs.length === 1;
+  };
+  app._sortPopulations = function(a,b) {
+    if (a.isRelic === true) {
+      return 1;
+    }
+    if (b.isRelic === true) {
+      return -1;
+    }
+    return 0;
   };
 })(document);

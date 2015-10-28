@@ -42,7 +42,7 @@
       }
     },
     _getOptions : function(colors,text) {
-        var options = {title:text,legend:{position:'labeled'}};
+        var options = {title:text,legend:{position:'labeled'},pieSliceBorderColor:'grey'};
         if (colors && colors.length >= this.data.length) {
           var sliceColor = {};
           for (var i=0;i<colors.length;i++) {

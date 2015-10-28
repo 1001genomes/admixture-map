@@ -23,7 +23,7 @@
   </style>
   <template>
     <div class="icon" id="icon">
-      <canvas-piechart id="piechart" data="{{data}}" size="{{size}}"></canvas-piechart>
+      <canvas-piechart id="piechart" data="{{data}}" size="{{size}}" colors="{{colors}}"></canvas-piechart>
     </div>
     <div class="text" id="text">{{_getNumberOfMarkers(markers)}}</div>
   </template>
@@ -45,8 +45,11 @@
            type:Array,
            computed: '_calculdateData(markers)'
          },
+         colors: {
+           type: Array,
+           computed:'_getCustomColors(markers)'
+         }
       },
-
       created: function() {
         this.scale = d3.scale.linear().domain([1, 10]).range([25, 60]);
       },
@@ -61,6 +64,12 @@
       },
       _getNumberOfMarkers : function(markers) {
         return markers.length;
+      },
+      _getCustomColors: function(markers) {
+         if (markers !== null && markers.length > 0) {
+             return markers[0].colors;
+         }
+         return null;
       },
       _calculdateData: function(markers) {
         if (!markers) {

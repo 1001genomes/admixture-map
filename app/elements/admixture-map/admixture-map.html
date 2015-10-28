@@ -71,7 +71,7 @@
         <google-map-marker id="accessionMarker" z-index="9999" latitude="0" longitude="0" hidden$="{{!showAccessionMarker}}"></google-map-marker>
       </google-map>
       <google-map-markerclusterer id="markerclusterer" map="{{map}}" markers="{{markers}}" average-center="{{averageCenter}}"
-      styles="{{styles}}" on-google-map-markercluster-clustering-end="onClusteringEnd">
+      styles="{{styles}}" on-google-map-markercluster-clustering-end="onClusteringEnd" >
         <admixture-clustericon class="cluster-icon"></admixture-clustericon>
       </google-map-markerclusterer>
     </div>
@@ -87,7 +87,7 @@
           <template>
             <paper-icon-item ix="{{index}}">
               <div item-icon>
-                <canvas-piechart data="{{item.data}}" size="50" />
+                <canvas-piechart data="{{item.data}}" colors="{{colors}}" size="50" />
               </div>
               <paper-item-body two-line>
                 <div>{{item.name}}</div>
@@ -107,7 +107,7 @@
         <div class="layout vertical">
            <h4 style="margin-bottom:0">Clusters<span hidden$="{{_showLegendNote(slicenames)}}">*</span></h4>
            <ul>
-             <template is="dom-repeat" items="{{_getSliceColorPairs(colors,slicenames)}}">
+             <template is="dom-repeat" items="{{_getSliceColorPairs(colors,slicenames)}}" sort="_sortLegend">
                <li>
                  <svg xmlns="http://www.w3.org/2000/svg" height="10px" width="10px">
                     <circle cx="5" cy="5" r="5" stroke="black" fill$="{{item.color}}" />
@@ -127,8 +127,6 @@
      (function() {
 
       var COLORS20  =  ['#1f77b4','#aec7e8','#ff7f0e','#ffbb78','#2ca02c','#98df8a','#d62728','#ff9896','#9467bd','#c5b0d5','#8c564b','#c49c94','#e377c2','#f7b6d2','#7f7f7f','#c7c7c7','#bcbd22','#dbdb8d','#17becf','#9edae5'];
-      /*var COLORS20b = ['#393b79','#5254a3','#6b6ecf','#9c9ede','#637939','#8ca252','#b5cf6b','#cedb9c','#8c6d31','#bd9e39','#e7ba52','#e7cb94','#843c39','#ad494a','#d6616b','#e7969c','#7b4173','#a55194','#ce6dbd','#de9ed6'];
-      var COLORS20c = ['#3182bd','#6baed6','#9ecae1','#c6dbef','#e6550d','#fd8d3c','#fdae6b','#fdd0a2','#31a354','#74c476','#a1d99b','#c7e9c0','#756bb1','#9e9ac8','#bcbddc','#dadaeb','#636363','#969696','#bdbdbd','#d9d9d9'];*/
       var COLORS10  =  ['#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd','#8c564b','#e377c2','#7f7f7f','#bcbd22','#17becf'];
 
       Polymer({
@@ -165,11 +163,15 @@
           },
           colors: {
             type: Array,
-            computed: '_getColors(kcount)'
+            computed: '_getColors(kcount,populations)'
           },
           slicenames: {
             type:Array,
             computed: '_getSliceNames(kcount)'
+          },
+          populations: {
+            type: Array,
+            value: function() { return [];}
           },
           kcount:  Number
         },
@@ -207,8 +209,11 @@
           this.$.infoOverlay.data = data;
           this.toggleClass('shadow-elevation-16dp',true,this.$.infoOverlay);
         },
-        _getColors: function(kcount) {
+        _getColors: function(kcount,populations) {
             if (kcount <= 10) {
+              if (kcount === 9) {
+                return populations.map(function(item) {return item.color;});
+              }
               return COLORS10;
             }
             return COLORS20;
@@ -317,7 +322,15 @@
         _getTitleFromMarker: function(marker) {
           return 'Name: ' + marker.name +' ('+marker.accId+')';
         },
-
+        _sortLegend: function(a,b) {
+          if (a.label === 'Relict') {
+            return 1;
+          }
+          if (b.label === 'Relict') {
+            return -1;
+          }
+          return 0;
+        },
         _filterDisplayMarkers: function(newValue,oldValue) {
            var markers = this.displayMarkers;
            if (newValue === '' || newValue.length < oldValue.length || !isNaN(newValue)) {
