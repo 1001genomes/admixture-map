@@ -7,9 +7,7 @@
   app.showSpinner = true;
 
   app.apiKey = 'AIzaSyB1GbyVSIOK12RJbFMkaIJjwhVNG-b8fjc';
-  app.dataSources = [{value:'11w8bumbRj9R-lmdPa4tBCrf_7VDloDTG5jJTPg-w',name:'admixture FG3 1153',description:'1001 genomes: admixiture full genome version 3, 1153 accessions'},
-{value:'1LElwc9J3jDq_BfzxU9JzFYMb0HgKIsHkqlo-R3GR',name:'admixture identical individuals imputed',description:'1001genomes: admixture; 1146 accessions; identicals removed and imputed; no singletons; ld pruning to r^2 = 0.1'},
-                              {value:'19f1j8Gn-9zWP0q57H-uZhay10BEUQMejetutqDEG',name:'admixture all indiviudals',description:'1001 genomes: admixture; 1211 accessions; ld pruning to r^2 = 0.3'}];
+  app.dataSources = [{value:'1JawTH1dEup1Ie2XRlPFTND2aO9UrbGBLBUgwX1jj',name:'admixture',description:'1001 genomes: admixiture'}];
 
   app.clusterNames = ['Western Europe','Relicts','Germany','Northern Sweden','Iberian Peninsula','Central Asia','Southern Sweden','Italy, Balkans, Caucasus','Central Europe'];
 
@@ -107,7 +105,7 @@
   };
   app.fetchData = function () {
     this.showSpinner = true;
-    var query = 'SELECT ecotypeid,name,longitude,latitude,' + this._getColumnFromSettings().join(',') + ' FROM ' + this.dataSources[0].value;
+    var query = 'SELECT id,name,longitude,latitude,' + this._getColumnFromSettings().join(',') + ' FROM ' + this.dataSources[0].value;
     this.fusionQuery = query;
     this.fusionParams = { sql: query, key: this.apiKey };
     this.$.datasource.generateRequest();
@@ -127,7 +125,7 @@
     var layer = new google.maps.FusionTablesLayer({
       query: {
           select: '\'latitude\'',
-          from: '1DwOTrkELNx7DvrrmqGp4V5FDVR0cZUnlGNmZQ-J_',
+          from: '1JawTH1dEup1Ie2XRlPFTND2aO9UrbGBLBUgwX1jj',
         },
         options: {
           styleId: 2,
@@ -142,7 +140,7 @@
   };
 
   app._getInfoWIndowContent = function(row) {
-    return '<b>id:</b> '+row.ecotypeid.value + '<br>' +
+    return '<b>id:</b> '+row.id.value + '<br>' +
            '<b>name:</b> '+row.name.value + '<br>' +
            '<b>country:</b> '+row.country.value + '<br>' +
            '<b>sitename:</b> '+row.sitename.value + '<br>' +
