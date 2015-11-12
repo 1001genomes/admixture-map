@@ -1,56 +1,59 @@
 /* global google */
-(function (document) {
+/* global Polymer */
+(function(document) {
   'use strict';
 
   var app = document.querySelector('#app');
   app.showSpinner = true;
 
-  app.clusterNames = ['Western Europe', 'Relicts', 'Germany', 'Northern Sweden', 'Iberian Peninsula', 'Central Asia', 'Southern Sweden', 'Italy, Balkans, Caucasus', 'Central Europe'];
+  app.clusterNames = ['Western Europe', 'Relicts', 
+                      'Germany', 'Northern Sweden', 
+                      'Iberian Peninsula', 'Central Asia', 
+                      'Southern Sweden', 'Italy, Balkans, Caucasus', 
+                      'Central Europe'];
 
-  app.displayInstalledToast = function () {
+  app.displayInstalledToast = function() {
     // Check to make sure caching is actually enabled—it won't be in the dev environment.
-    if (!document.querySelector('platinum-sw-cache').disabled) {
-      document.querySelector('#caching-complete').show();
+    if (!Polymer.dom(document).querySelector('platinum-sw-cache').disabled) {
+      Polymer.dom(document).querySelector('#caching-complete').show();
     }
   };
 
-
-
   // Listen for template bound event to know when bindings
   // have resolved and content has been stamped to the page
-  app.addEventListener('dom-change', function () {
-    app.$.mapelement.addEventListener('google-map-ready', function () {
+  app.addEventListener('dom-change', function() {
+    app.$.mapelement.addEventListener('google-map-ready', function() {
       app.initFusionLayer();
     });
   });
 
   app.populations = [
-    { label: 'Western Europe (117)', color: '#5781fc' },
-    { label: 'Relict (25)', color: '#00e03d', isRelic: true },
-    { label: 'Germany (171)', color: '#55d8d8' },
-    { label: 'North Sweden (64)', color: '#ff9d00' },
-    { label: 'Iberian Peninsula (110)', color: '#e04d9d' },
-    { label: 'Central Asia (79)', color: '#7d55fc' },
-    { label: 'South Sweden (156)', color: '#fc6355' },
-    { label: 'Italy, Balkans, Caucasus (92)', color: 'white' },
-    { label: 'Central Europe (184)', color: '#fbf358' }
+    {label: 'Western Europe (117)', color: '#5781fc'},
+    {label: 'Relict (25)', color: '#00e03d', isRelic: true},
+    {label: 'Germany (171)', color: '#55d8d8'},
+    {label: 'North Sweden (64)', color: '#ff9d00'},
+    {label: 'Iberian Peninsula (110)', color: '#e04d9d'},
+    {label: 'Central Asia (79)', color: '#7d55fc'},
+    {label: 'South Sweden (156)', color: '#fc6355'},
+    {label: 'Italy, Balkans, Caucasus (92)', color: 'white'},
+    {label: 'Central Europe (184)', color: '#fbf358'}
   ];
 
   // See https://github.com/Polymer/polymer/issues/1381
-  window.addEventListener('WebComponentsReady', function () {
+  window.addEventListener('WebComponentsReady', function() {
 
   });
 
-  app.toggleSettings = function () {
+  app.toggleSettings = function() {
     this.$.settingsMenu.toggle();
   };
-  app.openInfoWindow = function () {
+  app.openInfoWindow = function() {
     app.$.infoDialog.open();
   };
-  app.googleMapLoaded = function () {
+  app.googleMapLoaded = function() {
     this.mapLoaded = true;
   };
-  app.initFusionLayer = function () {
+  app.initFusionLayer = function() {
     var layer = new google.maps.FusionTablesLayer({
       query: {
         select: '\'latitude\'',
@@ -62,13 +65,13 @@
       }
     });
     layer.setMap(app.$.mapelement.map);
-    google.maps.event.addListener(layer, 'click', function (e) {
+    google.maps.event.addListener(layer, 'click', function(e) {
       // Change the content of the InfoWindow
       e.infoWindowHtml = app._getInfoWIndowContent(e.row);
     });
   };
 
-  app._getInfoWIndowContent = function (row) {
+  app._getInfoWIndowContent = function(row) {
     return '<b>id:</b> ' + row.id.value + '<br>' +
       '<b>name:</b> ' + row.name.value + '<br>' +
       '<b>country:</b> ' + row.country.value + '<br>' +
@@ -76,10 +79,10 @@
       '<b>group:</b> ' + row.population.value + '<br>'
       ;
   };
-  app._hideChrSetting = function (chrs) {
+  app._hideChrSetting = function(chrs) {
     return chrs.length === 1;
   };
-  app._sortPopulations = function (a, b) {
+  app._sortPopulations = function(a, b) {
     if (a.isRelic === true) {
       return 1;
     }
@@ -91,7 +94,7 @@
   app.changeKSetting = function() {
     this.showSpinner = true;
   };
-  app._getMarkersFromFusion = function (response) {
+  app._getMarkersFromFusion = function(response) {
     var markers = [];
     //var response = event.detail.response;
     if (response === null) {
@@ -113,7 +116,7 @@
       var marker = document.createElement('admixture-marker');
       var customColors = null;
       if (K === 9) {
-        customColors = this.populations.map(function (item) { return item.color; });
+        customColors = this.populations.map(function(item) { return item.color; });
       }
       marker.position = coordinate;
       marker.colors = customColors;
@@ -126,7 +129,7 @@
     //this.markers = markers;
     return markers;
   };
-  app._convertToInt = function (value) {
+  app._convertToInt = function(value) {
     return parseInt(value);
   };
 })(document);

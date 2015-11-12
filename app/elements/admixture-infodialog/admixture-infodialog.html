@@ -25,7 +25,7 @@
 
     properties: {
       text: {
-        type:String,
+        type: String,
         value: ''
       },
       data: {
@@ -38,30 +38,30 @@
       },
       slicenames: {
         type: Array,
-        value: function() {return  [];}
+        value: function() { return [];}
       }
     },
-    _getOptions : function(colors,text) {
-        var options = {title:text,legend:{position:'labeled'},pieSliceBorderColor:'grey'};
-        if (colors && colors.length >= this.data.length) {
-          var sliceColor = {};
-          for (var i=0;i<colors.length;i++) {
-            sliceColor[i] = {'color':colors[i]};
-          }
-          options.slices = sliceColor;
+    _getOptions: function(colors, text) {
+      var options = {title: text, legend: {position: 'labeled'}, pieSliceBorderColor: 'grey'};
+      if (colors && colors.length >= this.data.length) {
+        var sliceColor = {};
+        for (var i = 0; i < colors.length; i++) {
+          sliceColor[i] = {'color': colors[i]};
         }
-        return options;
+        options.slices = sliceColor;
+      }
+      return options;
     },
-    _getData: function(data,slicenames) {
-        var Kvalues = [['K','%']];
-        for (var i = 0; i < data.length; i++) {
-          var sliceName = 'K'+i;
-          if (slicenames.length > i) {
-            sliceName = slicenames[i];
-          }
-          Kvalues.push([sliceName,data[i]]);
+    _getData: function(data, slicenames) {
+      var Kvalues = [['K','%']];
+      for (var i = 0; i < data.length; i++) {
+        var sliceName = 'K' + i;
+        if (slicenames.length > i) {
+          sliceName = slicenames[i];
         }
-        return Kvalues;
+        Kvalues.push([sliceName,data[i]]);
+      }
+      return Kvalues;
     },
   });
 })();

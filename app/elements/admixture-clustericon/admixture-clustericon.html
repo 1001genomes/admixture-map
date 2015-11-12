@@ -35,77 +35,77 @@
     Polymer({
       is: 'admixture-clustericon',
       behaviors: [Markerclusterer.ClusterIconBehavior],
-
+  
       properties: {
-         size : {
-           type: Number,
-           value: 25
-         },
-         data: {
-           type:Array,
-           computed: '_calculdateData(markers)'
-         },
-         colors: {
-           type: Array,
-           computed:'_getCustomColors(markers)'
-         }
+        size: {
+          type: Number,
+          value: 25
+        },
+        data: {
+          type: Array,
+          computed: '_calculdateData(markers)'
+        },
+        colors: {
+          type: Array,
+          computed: '_getCustomColors(markers)'
+        }
       },
       created: function() {
         this.scale = d3.scale.linear().domain([1, 10]).range([25, 60]);
       },
-
+  
       updateMarkers: function() {
-         this.size = this.scale(Polymer.dom(this).parentNode.map.getZoom());
-         var offset = this.size/2;
-         this.$.text.style.width = this.size+'px';
-  		   this.$.text.style.lineHeight = this.size+'px';
-         this.$.text.style.top = offset;
-  		   this.$.text.style.left = offset;
+        this.size = this.scale(Polymer.dom(this).parentNode.map.getZoom());
+        var offset = this.size / 2;
+        this.$.text.style.width = this.size + 'px';
+        this.$.text.style.lineHeight = this.size + 'px';
+        this.$.text.style.top = offset;
+        this.$.text.style.left = offset;
       },
-      _getNumberOfMarkers : function(markers) {
+      _getNumberOfMarkers: function(markers) {
         return markers.length;
       },
       _getCustomColors: function(markers) {
-         if (markers !== null && markers.length > 0) {
-             return markers[0].colors;
-         }
-         return null;
+        if (markers !== null && markers.length > 0) {
+          return markers[0].colors;
+        }
+        return null;
       },
       _calculdateData: function(markers) {
         if (!markers) {
-  		       return null;
-  		  }
-  		  var percentages = this._getMarkerPercentages(markers);
-  		  var averages  = [];
-  		  for (var i = 0;i<percentages.length;i++){
-  	       var sum = 0;
-  	       var percentage = percentages[i];
-  	       for (var j=0;j<percentage.length;j++) {
-  	         sum+=percentage[j];
-  	       }
-  	       averages.push(sum/percentage.length);
-  	     }
-  	     return averages;
+          return null;
+        }
+        var percentages = this._getMarkerPercentages(markers);
+        var averages  = [];
+        for (var i = 0; i < percentages.length; i++) {
+          var sum = 0;
+          var percentage = percentages[i];
+          for (var j = 0; j < percentage.length; j++) {
+            sum += percentage[j];
+          }
+          averages.push(sum / percentage.length);
+        }
+        return averages;
       },
-      _getMarkerPercentages : function(markers) {
-  		    if (!markers) {
-  		      return [];
-  		    }
-  		    var percentages =  [];
-  		    for (var i = 0;i<markers.length;i++) {
-  		      var marker = markers[i];
-  		      if (!marker.data) {
-  		        continue;
+      _getMarkerPercentages: function(markers) {
+        if (!markers) {
+          return [];
+        }
+        var percentages =  [];
+        for (var i = 0; i < markers.length; i++) {
+          var marker = markers[i];
+          if (!marker.data) {
+            continue;
+          }
+          for (var j = 0; j < marker.data.length; j++) {
+            if (percentages.length <= j) {
+              percentages.push([]);
             }
-  		      for (var j=0;j<marker.data.length;j++) {
-  		        if (percentages.length <=j) {
-  		          percentages.push([]);
-  		        }
-  		        percentages[j].push(marker.data[j]);
-  		      }
-  		    }
-  		    return percentages;
-  		  },
+            percentages[j].push(marker.data[j]);
+          }
+        }
+        return percentages;
+      },
     });
   })();
 </script>

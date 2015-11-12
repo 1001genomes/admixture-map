@@ -22,94 +22,98 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <iron-ajax id="datasourceMeta" handleAs="json" last-response="{{metaResponse}}" url$="https://www.googleapis.com/fusiontables/v1/tables/{{tableId}}/columns?maxResults=0&key={{apiKey}}"></iron-ajax>
     <iron-ajax id="datasource" url="https://www.googleapis.com/fusiontables/v1/query" params="{{query}}" handle-as="json" last-response="{{fusionResponse}}" ></iron-ajax>
   </template>
-</dom-module>
-<script>
-/* global d3 */
-(function() {
-  Polymer({
-    is: 'admixture-data',
-
-    properties: {
-      fusionResponse: {
-        type: Object,
-        notify: true
-      }, 
-      activek: {
-        type:Number,
-        notify:true
-      }, 
-      tableId: {
-        type: String,
-        value: '1JawTH1dEup1Ie2XRlPFTND2aO9UrbGBLBUgwX1jj'
-      },
-      apiKey: {
-        type: String,
-        value: 'AIzaSyB1GbyVSIOK12RJbFMkaIJjwhVNG-b8fjc'
-      }, 
-      ks: {
-        type:Array, 
-        notify:true
-      },
-      chrs: {
-        type:Array,
-        notify:true
-      },
-      query: {
-        type:String,
-        computed:'_getColumns(activek,chr,tableId,apiKey)'
-      }
-    },
-    inCache: true,
-    observers: ['_getMetaInfoFromResponse(metaResponse)',
-                '_startRequest(inCache)'],
+  <script>
+    /* global d3 */
+    (function() {
+      Polymer({
+        is: 'admixture-data',
     
-    loadMetaFrombackend: function() {
-      this.$.datasourceMeta.generateRequest();
-    },
-    loadFromBackend: function() {
-      this.inCache = false;
-    },
-    _getCacheKey: function(tableId,activek) {
-      return tableId+'_'+activek;
-    },
-    _getColumns: function(activek,chr,tableId,apiKey) {
-      return {sql:'SELECT id,name,longitude,latitude,' + this._getColumnFromSettings(activek,chr).join(',') + ' FROM ' + tableId,key: apiKey};
-    },
-    _startRequest: function(inCache) {
-      if (inCache === false) {
-        this.$.datasource.generateRequest();
-        this.inCache = true;
-      }
-    },
-    _getMetaInfoFromResponse: function(response) {
-      if (response === null) {
-        return null;
-      }
-      var Ks = [];
-      var chrs = [];
-      for (var i = 0; i < response.items.length; i++) {
-        var column = response.items[i].name;
-        var parts = column.split('\.');
-        if (parts.length === 3) {
-          Ks.push(parts[0].substr(1));
-          chrs.push(parts[1].substr(3));
+        properties: {
+          fusionResponse: {
+            type: Object,
+            notify: true
+          }, 
+          activek: {
+            type: Number,
+            notify: true
+          }, 
+          tableId: {
+            type: String,
+            value: '1JawTH1dEup1Ie2XRlPFTND2aO9UrbGBLBUgwX1jj'
+          },
+          apiKey: {
+            type: String,
+            value: 'AIzaSyB1GbyVSIOK12RJbFMkaIJjwhVNG-b8fjc'
+          }, 
+          ks: {
+            type: Array, 
+            notify: true
+          },
+          chrs: {
+            type: Array,
+            notify: true
+          },
+          query: {
+            type: String,
+            computed: '_getColumns(activek,chr,tableId,apiKey)'
+          }
+        },
+        inCache: true,
+        observers: ['_getMetaInfoFromResponse(metaResponse)',
+                    '_startRequest(inCache)'],
+        
+        loadMetaFrombackend: function() {
+          this.$.datasourceMeta.generateRequest();
+        },
+        loadFromBackend: function() {
+          this.inCache = false;
+        },
+        _getCacheKey: function(tableId, activek) {
+          return tableId + '_' + activek;
+        },
+        _getColumns: function(activek, chr, tableId, apiKey) {
+          var qry = 'SELECT id,name,longitude,latitude,';
+          qry += this._getColumnFromSettings(activek,chr).join(',');
+          qry += ' FROM ' + tableId;
+          return {sql: qry, key: apiKey};
+        },
+        _startRequest: function(inCache) {
+          if (inCache === false) {
+            this.$.datasource.generateRequest();
+            this.inCache = true;
+          }
+        },
+        _getMetaInfoFromResponse: function(response) {
+          if (response === null) {
+            return null;
+          }
+          var Ks = [];
+          var chrs = [];
+          for (var i = 0; i < response.items.length; i++) {
+            var column = response.items[i].name;
+            var parts = column.split('\.');
+            if (parts.length === 3) {
+              Ks.push(parts[0].substr(1));
+              chrs.push(parts[1].substr(3));
+            }
+          }
+          Ks = d3.set(Ks).values();
+          chrs = d3.set(chrs).values();
+          this.ks = Ks;
+          this.chrs = chrs;
+          this.activek = this.activek || 9;
+          this.chr = this.chrs[0];
+        },
+        _getColumnFromSettings: function(activek, chr) {
+          var columns = [];
+          var baseColumn = 'K' + activek + '.Chr' + chr;
+          for (var i = 0; i < activek; i++) {
+            columns.push('\'' + baseColumn + '.' + i + '\'');
+          }
+          return columns;
         }
-      }
-      Ks = d3.set(Ks).values();
-      chrs = d3.set(chrs).values();
-      this.ks = Ks;
-      this.chrs = chrs;
-      this.activek = this.activek || 9;
-      this.chr = this.chrs[0];
-    },
-    _getColumnFromSettings : function(activek,chr) {
-      var columns = [];
-      var baseColumn = 'K' + activek + '.Chr' + chr;
-      for (var i = 0; i < activek; i++) {
-        columns.push('\''+baseColumn + '.' + i+'\'');
-      }
-      return columns;
-      }
-  });
-})();
-</script>
+      });
+    })();
+  </script>
+</dom-module>
+

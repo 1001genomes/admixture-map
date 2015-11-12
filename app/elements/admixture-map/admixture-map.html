@@ -124,70 +124,76 @@
   </template>
   <script>
     /* global google */
-     (function() {
+    (function() {
 
-      var COLORS20  =  ['#1f77b4','#aec7e8','#ff7f0e','#ffbb78','#2ca02c','#98df8a','#d62728','#ff9896','#9467bd','#c5b0d5','#8c564b','#c49c94','#e377c2','#f7b6d2','#7f7f7f','#c7c7c7','#bcbd22','#dbdb8d','#17becf','#9edae5'];
-      var COLORS10  =  ['#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd','#8c564b','#e377c2','#7f7f7f','#bcbd22','#17becf'];
+      var COLORS20  =  ['#1f77b4','#aec7e8','#ff7f0e','#ffbb78',
+      '#2ca02c','#98df8a','#d62728','#ff9896','#9467bd','#c5b0d5',
+      '#8c564b','#c49c94','#e377c2','#f7b6d2','#7f7f7f','#c7c7c7',
+      '#bcbd22','#dbdb8d','#17becf','#9edae5'];
+      
+      var COLORS10  =  ['#1f77b4','#ff7f0e','#2ca02c','#d62728',
+      '#9467bd','#8c564b','#e377c2','#7f7f7f','#bcbd22','#17becf'];
 
       Polymer({
         is: 'admixture-map',
 
         properties: {
           markers: {
-            type:Array,
+            type: Array,
             value: function() {return [];}
           },
           map: {
-            type:Object
+            type: Object
           },
           displayMarkers: {
-            type:Array,
+            type: Array,
             value: function() {return [];}
           },
           averageCenter: {
-            type:Boolean,
-            value:true
+            type: Boolean,
+            value: true
           },
           showOverlay: {
             type: Boolean,
-            value:false
+            value: false
           },
           showAccessionMarker: {
             type: Boolean,
             value: false
           },
           queryString: {
-            type:String,
+            type: String,
             value: '',
-            observer:'_filterDisplayMarkers'
+            observer: '_filterDisplayMarkers'
           },
           colors: {
             type: Array,
             computed: '_getColors(kcount,populations)'
           },
           slicenames: {
-            type:Array,
+            type: Array,
             computed: '_getSliceNames(kcount)'
           },
           populations: {
             type: Array,
             value: function() { return [];}
           },
-          kcount:  Number
+          kcount: Number
         },
         listeners: {
-          'google-map-markercluster-mouseover':'onMouseOverCluster',
-          'google-map-markercluster-mouseout':'onMouseOutCluster',
+          'google-map-markercluster-mouseover': 'onMouseOverCluster',
+          'google-map-markercluster-mouseout': 'onMouseOutCluster',
           'google-map-markercluster-click': 'onClickCluster',
-          'marker-mouseover':'onMouseOverMarker',
-          'marker-mouseout':'onMouseOutMarker',
-          'marker-click':'onClickMarker',
+          'marker-mouseover': 'onMouseOverMarker',
+          'marker-mouseout': 'onMouseOutMarker',
+          'marker-click': 'onClickMarker',
         },
         infoWindow: null,
         onMouseOverCluster: function(e) {
           var cluster = Polymer.dom(e).localTarget;
           this.displayMarkers = this._getMarkersFromCluster(cluster);
-          this._showOverlay(cluster.clusterSubIcon.data,'Cluster of ' + cluster.markers.length+' accessions');
+          var title = 'Cluster of ' + cluster.markers.length + ' accessions';
+          this._showOverlay(cluster.clusterSubIcon.data,title);
         },
         onMouseOutCluster: function() {
           this._hideOverlay();
@@ -209,60 +215,62 @@
           this.$.infoOverlay.data = data;
           this.toggleClass('shadow-elevation-16dp',true,this.$.infoOverlay);
         },
-        _getColors: function(kcount,populations) {
-            if (kcount <= 10) {
-              if (kcount === 9) {
-                return populations.map(function(item) {return item.color;});
-              }
-              return COLORS10;
+        _getColors: function(kcount, populations) {
+          if (kcount <= 10) {
+            if (kcount === 9) {
+              return populations.map(function(item) {return item.color;});
             }
-            return COLORS20;
+            return COLORS10;
+          }
+          return COLORS20;
         },
-        _getLabelFromIndex: function(colors,index) {
+        _getLabelFromIndex: function(colors, index) {
           return this.datasource.labels[index];
         },
         _getSliceNames: function(kcount) {
           if (kcount === 9) {
-            return  ['Western Europe','Relict','Germany','Northern Sweden','Iberian Peninsula','Central Asia','Southern Sweden','Italy, Balkans, Caucasus','Central Europe'];
+            return ['Western Europe','Relict',
+            'Germany','Northern Sweden','Iberian Peninsula',
+            'Central Asia','Southern Sweden',
+            'Italy, Balkans, Caucasus','Central Europe'];
           }
           return [];
         },
         _showLegendNote: function(slicenames) {
           return slicenames.length === 0;
         },
-        _getSliceColorPairs: function(colors,slicenames) {
+        _getSliceColorPairs: function(colors, slicenames) {
           var pairs = [];
           var i;
           if (slicenames.length === 0) {
-             for (i=0;i<this.kcount;i++) {
-               pairs.push({color:colors[i],label:'K'+i});
-             }
-          }
-          else {
-             for (i=0;i<slicenames.length;i++) {
-               pairs.push({color:colors[i],label:slicenames[i]});
-             }
+            for (i = 0; i < this.kcount; i++) {
+              pairs.push({color: colors[i], label: 'K' + i});
+            }
+          } else {
+            for (i = 0; i < slicenames.length; i++) {
+              pairs.push({color: colors[i], label: slicenames[i]});
+            }
           }
           return pairs;
         },
-        _getMarkersFromCluster: function(cluster)  {
+        _getMarkersFromCluster: function(cluster) {
           return cluster.markers;
         },
-        _getVisibleMarkers : function() {
+        _getVisibleMarkers: function() {
           var visibleMarkers = [];
-          for (var i = 0;i<this.$.markerclusterer.clusters.length;i++) {
+          for (var i = 0; i < this.$.markerclusterer.clusters.length; i++) {
             var cluster = this.$.markerclusterer.clusters[i];
             visibleMarkers = visibleMarkers.concat(cluster.markers);
           }
           return visibleMarkers;
         },
-        onClusteringEnd:  function() {
+        onClusteringEnd: function() {
           this.displayMarkers = this._getVisibleMarkers();
         },
         onClickCluster: function() {
           this._hideOverlay();
         },
-        onMouseOverList : function(e) {
+        onMouseOverList: function(e) {
           e.stopPropagation();
           if (e.target !== e.currentTarget) {
             var ix = this._getListItemIxFromEvent(e.target);
@@ -276,7 +284,7 @@
           }
         },
         onMouseClickList: function(e) {
-           if (e.target !== e.currentTarget) {
+          if (e.target !== e.currentTarget) {
             var ix = this._getListItemIxFromEvent(e.target);
             if (ix !== null) {
               var marker = this.displayMarkers[ix];
@@ -294,7 +302,7 @@
           var marker = e.target;
           var popup = document.createElement('admixture-infodialog');
           popup.colors = this.colors;
-          popup.text = 'Name: ' + marker.name +' ('+marker.accId+')';
+          popup.text = 'Name: ' + marker.name + ' (' + marker.accId + ')';
           popup.data = marker.data;
           popup.slicenames = this.slicenames;
           this.infoWindow.setContent(popup);
@@ -303,7 +311,7 @@
         },
         onMouseOutList: function(e) {
           e.stopPropagation();
-          this.showAccessionMarker =false;
+          this.showAccessionMarker = false;
           this._hideOverlay();
         },
         _getCount: function(displayMarkers) {
@@ -320,9 +328,9 @@
         },
 
         _getTitleFromMarker: function(marker) {
-          return 'Name: ' + marker.name +' ('+marker.accId+')';
+          return 'Name: ' + marker.name + ' (' + marker.accId + ')';
         },
-        _sortLegend: function(a,b) {
+        _sortLegend: function(a, b) {
           if (a.label === 'Relict') {
             return 1;
           }
@@ -331,19 +339,19 @@
           }
           return 0;
         },
-        _filterDisplayMarkers: function(newValue,oldValue) {
-           var markers = this.displayMarkers;
-           if (newValue === '' || newValue.length < oldValue.length || !isNaN(newValue)) {
-             markers = this._getVisibleMarkers();
-           }
-           var foundMarkers = [];
-           for (var i=0;i<markers.length;i++) {
-              var marker = markers[i];
-              if (marker.name.indexOf(newValue) > -1 || marker.accId === newValue) {
-                foundMarkers.push(marker);
-              }
+        _filterDisplayMarkers: function(newValue, oldValue) {
+          var markers = this.displayMarkers;
+          if (newValue === '' || newValue.length < oldValue.length || !isNaN(newValue)) {
+            markers = this._getVisibleMarkers();
+          }
+          var foundMarkers = [];
+          for (var i = 0; i < markers.length; i++) {
+            var marker = markers[i];
+            if (marker.name.indexOf(newValue) > -1 || marker.accId === newValue) {
+              foundMarkers.push(marker);
             }
-           this.displayMarkers = foundMarkers;
+          }
+          this.displayMarkers = foundMarkers;
         },
       });
     })();

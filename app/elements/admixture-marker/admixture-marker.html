@@ -22,50 +22,50 @@ part of the polymer project is also subject to an additional IP rights grant fou
   (function() {
     Polymer({
       is: 'admixture-marker',
-       behaviors: [Markerclusterer.GoogleMapOverlayViewMarkerBehavior],
-       properties: {
-         data: {
-           type:Array,
-           value: function() {return [];}
-         },
-         accId: {
-           type:Number
-         },
-         name:String,
-         colors: {
-           type: Array,
-           value: function() {return null;}
-         }
-       },
-
-       listeners: {
-          'tap': 'onClickMarker',
-          'mouseover': 'onMouseOver',
-          'mouseout': 'onMouseOut'
+      behaviors: [Markerclusterer.GoogleMapOverlayViewMarkerBehavior],
+      properties: {
+        data: {
+          type: Array,
+          value: function() { return []; }
         },
-       created: function() {
-         this.scale = d3.scale.linear()
+        accId: {
+          type: Number
+        },
+        name: String,
+        colors: {
+          type: Array,
+          value: function() { return null; }
+        }
+      },
+
+      listeners: {
+        'tap': 'onClickMarker',
+        'mouseover': 'onMouseOver',
+        'mouseout': 'onMouseOut'
+      },
+      created: function() {
+        this.scale = d3.scale.linear()
           .domain([1, 10])
           .range([25, 60]);
-       },
-       draw: function() {
-         var size = this.scale(this.getMap().getZoom());
-         this.$.piechart.size = size;
-         this.update(this.position,size);
-       },
-       onAdd: function() {
-         var panes = this.overlay.getPanes();
-         panes.overlayMouseTarget.appendChild(this);
-       },
-       onMouseOver: function() {
-         this.fire('marker-mouseover',this);
-       },
-       onMouseOut: function() {
-         this.fire('marker-mouseout',this);
-       },
-       onClickMarker : function() {
-         this.fire('marker-click');
-       }
+      },
+      draw: function() {
+        var size = this.scale(this.getMap().getZoom());
+        this.$.piechart.size = size;
+        this.update(this.position,size);
+      },
+      onAdd: function() {
+        var panes = this.overlay.getPanes();
+        panes.overlayMouseTarget.appendChild(this);
+      },
+      onMouseOver: function() {
+        this.fire('marker-mouseover',this);
+      },
+      onMouseOut: function() {
+        this.fire('marker-mouseout',this);
+      },
+      onClickMarker: function() {
+        this.fire('marker-click');
+      }
     });
   })();
 </script>
