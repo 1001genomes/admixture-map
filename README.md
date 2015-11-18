@@ -2,7 +2,7 @@ The 1001 Genomes Admixture Map
 ==
 The [1001 Genomes Admixture Map](http://gregor-mendel-institute.github.io/1001-admixture-map/) is an interactive web-based tool, that allows to interactively explore the fine-scale picture of population structure for the 1135 _A. thaliana_ accession that are part of the [1001 genomes project](http://1001genomes.org/).
 
-The data was generated using the software package [ADMIXTURE](https://www.genetics.ucla.edu/software/admixture/) and stored in a [Fusion table](https://www.google.com/fusiontables/DataSource?docid=1JawTH1dEup1Ie2XRlPFTND2aO9UrbGBLBUgwX1jj).
+The data was generated using the software package [ADMIXTURE](https://www.genetics.ucla.edu/software/admixture/) and stored in a [Fusion table](https://www.google.com/fusiontables/DataSource?docid=1sAmLLWfMS8Ux0kJqFB07ZNadLd_t7Ji0zUTXznBI).
 
 ![Admixture-map](https://raw.githubusercontent.com/Gregor-Mendel-Institute/1001-admixture-map/master/preview.gif "1001 Genomes Admixture Map")
 

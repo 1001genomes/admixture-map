@@ -55,16 +55,18 @@
   };
   app.initFusionLayer = function() {
     var layer = new google.maps.FusionTablesLayer({
+      map: app.$.mapelement.map,
+      heatmap: {enabled: false},
       query: {
-        select: '\'latitude\'',
-        from: '1JawTH1dEup1Ie2XRlPFTND2aO9UrbGBLBUgwX1jj',
+        select: 'col6\x3e\x3e1',
+        from: '1sAmLLWfMS8Ux0kJqFB07ZNadLd_t7Ji0zUTXznBI',
+        where: ''
       },
       options: {
-        styleId: 2,
-        templateId: 2
+        styleId: 3,
+        templateId: 4
       }
     });
-    layer.setMap(app.$.mapelement.map);
     google.maps.event.addListener(layer, 'click', function(e) {
       // Change the content of the InfoWindow
       e.infoWindowHtml = app._getInfoWIndowContent(e.row);
@@ -76,7 +78,7 @@
       '<b>name:</b> ' + row.name.value + '<br>' +
       '<b>country:</b> ' + row.country.value + '<br>' +
       '<b>sitename:</b> ' + row.sitename.value + '<br>' +
-      '<b>group:</b> ' + row.population.value + '<br>'
+      '<b>group:</b> ' + row.group.value + '<br>'
       ;
   };
   app._hideChrSetting = function(chrs) {
