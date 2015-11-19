@@ -1,0 +1,30 @@
+<dom-module id="shared-styles"><template><style>
+      .page-title {
+        @apply(--paper-font-display2);
+      }
+
+      @media (max-width: 600px) {
+        .page-title {
+          font-size: 24px!important;
+        }
+      }
+
+    .legend {
+        position:absolute;
+        top:10px;
+        right:10px;
+     }
+     .legend > paper-material {
+       
+     }
+
+     .legend li {
+       list-style:none;
+     }
+     .legend ul {
+        padding:0;
+     }
+     .legend-container {
+        padding:10px;
+     }
+    </style></template></dom-module>

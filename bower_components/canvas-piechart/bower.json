@@ -1,0 +1,24 @@
+{
+  "name": "canvas-piechart",
+  "version": "1.0.0",
+  "authors": [
+    "Uemit Seren <uemit.seren@gmail.com>"
+  ],
+  "description": "Element to draw a piechart on a HTML5 Canvas.",
+  "keywords": ["piechart", "polymer", "web-components"],
+  "main": "canvas-piechart.html",
+  "license": "MIT",
+  "homepage": "https://github.com/timeu/canvas-piechart/",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/demo/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "*"
+  }
+}
