@@ -1,10 +1,10 @@
 The 1001 Genomes Admixture Map
 ==
-The [1001 Genomes Admixture Map](http://gregor-mendel-institute.github.io/1001-admixture-map/) is an interactive web-based tool, that allows to interactively explore the fine-scale picture of population structure for the 1135 _A. thaliana_ accession that are part of the [1001 genomes project](http://1001genomes.org/).
+The [1001 Genomes Admixture Map](http://1001genomes.github.io/admixture-map/) is an interactive web-based tool, that allows to interactively explore the fine-scale picture of population structure for the 1135 _A. thaliana_ accession that are part of the [1001 genomes project](http://1001genomes.org/).
 
 The data was generated using the software package [ADMIXTURE](https://www.genetics.ucla.edu/software/admixture/) and stored in a [Fusion table](https://www.google.com/fusiontables/DataSource?docid=1sAmLLWfMS8Ux0kJqFB07ZNadLd_t7Ji0zUTXznBI).
 
-![Admixture-map](https://raw.githubusercontent.com/Gregor-Mendel-Institute/1001-admixture-map/master/preview.gif "1001 Genomes Admixture Map")
+![Admixture-map](https://raw.githubusercontent.com/1001genomes/admixture-map/master/preview.gif "1001 Genomes Admixture Map")
 
 For each accession a piechart is displayed. The slices correspond to the various fractions of the ADMIXTURE cluster.
 Users can change the number of clusters K by clicking on the gear icon in the top left corner (by default data for K=9 is shown).
