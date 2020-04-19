@@ -12,6 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 // Include Gulp & tools we'll use
 var ghPages = require('gulp-gh-pages');
 var gulp = require('gulp');
+var gulpUtil = require('gulp-util');
 var $ = require('gulp-load-plugins')();
 var del = require('del');
 var runSequence = require('run-sequence');
@@ -77,7 +78,7 @@ var optimizeHtmlTask = function(src, dest) {
     // Concatenate and minify JavaScript
     .pipe($.if('*.js', $.uglify({
       preserveComments: 'some'
-    })))
+    }).on('error', gulpUtil.log)))
     // Concatenate and minify styles
     // In case you are still using useref build blocks
     .pipe($.if('*.css', $.cssmin()))
@@ -123,8 +124,8 @@ gulp.task('lint', function() {
   .pipe($.jshint())
   .pipe($.jscs())
   .pipe($.jscsStylish.combineWithHintResults())
-  .pipe($.jshint.reporter('jshint-stylish'))
-  .pipe($.if(!browserSync.active, $.jshint.reporter('fail')));
+  .pipe($.jshint.reporter('jshint-stylish'));
+  //.pipe($.if(!browserSync.active, $.jshint.reporter('fail')));
 });
 
 // Optimize images
