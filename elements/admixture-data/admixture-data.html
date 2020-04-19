@@ -19,34 +19,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <template>
     <iron-localstorage id="localstorage" name="{{tableId}}_{{activek}}" value="{{fusionResponse}}" on-iron-localstorage-load-empty="loadFromBackend" ></iron-localstorage>
     <iron-localstorage id="localstorageMeta" name="{{tableId}}" value="{{metaResponse}}" on-iron-localstorage-load-empty="loadMetaFrombackend" ></iron-localstorage>
-    <iron-ajax id="datasourceMeta" handleAs="json" last-response="{{metaResponse}}" url$="https://www.googleapis.com/fusiontables/v1/tables/{{tableId}}/columns?maxResults=0&key={{apiKey}}"></iron-ajax>
-    <iron-ajax id="datasource" url="https://www.googleapis.com/fusiontables/v1/query" params="{{query}}" handle-as="json" last-response="{{fusionResponse}}" ></iron-ajax>
+    <iron-ajax id="datasourceMeta" handleAs="json" last-response="{{metaResponse}}" url$="https://sheets.googleapis.com/v4/spreadsheets/{{tableId}}/values/A1:EB1?key={{apiKey}}"></iron-ajax>
+    <iron-ajax id="datasource" url="https://sheets.googleapis.com/v4/spreadsheets/{{tableId}}/values:batchGet" params="{{query}}" handle-as="json" last-response="{{fusionResponse}}" ></iron-ajax>
   </template>
   <script>
     /* global d3 */
     (function() {
       Polymer({
         is: 'admixture-data',
-    
+
         properties: {
           fusionResponse: {
             type: Object,
             notify: true
-          }, 
+          },
           activek: {
             type: Number,
             notify: true
-          }, 
+          },
           tableId: {
             type: String,
-            value: '1sAmLLWfMS8Ux0kJqFB07ZNadLd_t7Ji0zUTXznBI'
+            value: '1_jp6KKfUC0z1WteS9HUIp4f3ssFZlCV3KXPIvrTW0Fk'
           },
           apiKey: {
             type: String,
             value: 'AIzaSyB1GbyVSIOK12RJbFMkaIJjwhVNG-b8fjc'
-          }, 
+          },
           ks: {
-            type: Array, 
+            type: Array,
             notify: true
           },
           chrs: {
@@ -60,8 +60,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         inCache: true,
         observers: ['_getMetaInfoFromResponse(metaResponse)',
-                    '_startRequest(inCache)'],
-        
+                    '_startRequest(inCache, metaResponse)'],
+
         loadMetaFrombackend: function() {
           this.$.datasourceMeta.generateRequest();
         },
@@ -72,13 +72,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return tableId + '_' + activek;
         },
         _getColumns: function(activek, chr, tableId, apiKey) {
-          var qry = 'SELECT id,name,longitude,latitude,';
-          qry += this._getColumnFromSettings(activek,chr).join(',');
-          qry += ' FROM ' + tableId;
-          return {sql: qry, key: apiKey};
+          var qry = ['id','name','longitude','latitude','country', 'sitename', 'group'];
+          qry = qry.concat(this._getColumnFromSettings(activek,chr));
+          return {ranges: qry, key: apiKey, majorDimension: 'ROWS'};
         },
         _startRequest: function(inCache) {
-          if (inCache === false) {
+          if (inCache === false && Object.keys(this.$.datasource.params).length > 0) {
             this.$.datasource.generateRequest();
             this.inCache = true;
           }
@@ -89,8 +88,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
           var Ks = [];
           var chrs = [];
-          for (var i = 0; i < response.items.length; i++) {
-            var column = response.items[i].name;
+          for (var i = 0; i < response.values[0].length; i++) {
+            var column = response.values[0][i];
             var parts = column.split('\.');
             if (parts.length === 3) {
               Ks.push(parts[0].substr(1));
@@ -108,7 +107,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var columns = [];
           var baseColumn = 'K' + activek + '.Chr' + chr;
           for (var i = 0; i < activek; i++) {
-            columns.push('\'' + baseColumn + '.' + i + '\'');
+            columns.push(baseColumn + '.' + i);
           }
           return columns;
         }
