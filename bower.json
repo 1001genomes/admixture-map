@@ -12,7 +12,7 @@
     "google-map": "GoogleWebComponents/google-map#1.1.6",
     "canvas-piechart": "1.0.0",
     "google-chart": "GoogleWebComponents/google-chart#1.0.4",
-    "neon-animation": "PolymerElements/neon-animation#1.0.8",
+    "neon-animation": "PolymerElements/neon-animation#1.2.5",
     "google-map-markerclusterer": "1.0.0",
     "marked-element": "PolymerElements/marked-element#1.1.1"
   },
